@@ -21,9 +21,12 @@
   (let [index (coords-to-index board row col)]
     (= empty-field (get (:fields board) index))))
 
+(defn update-fields [board row col value]
+  (assoc (:fields board) (coords-to-index board row col) value))
+
 (defn put-field [board row col value]
   (if (is-empty-field? board row col)
-  (->MoveResult (->Board (:size board) (assoc (:fields board) (coords-to-index board row col) value)) true)
+  (->MoveResult (->Board (:size board) (update-fields board row col value)) true)
   (->MoveResult board false)))
 
 (defn put-cross [board row col]
