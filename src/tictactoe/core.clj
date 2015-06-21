@@ -12,15 +12,10 @@
   (let [empty-fields (zipmap (range 0 (* size size)) (repeat (* size size) empty-field))]
     (->Board size empty-fields)))
 
-(defn board-fields-count [board]
-  (let [size (:size board)]
-    (* size size)))
-
 (defn coords-to-index [board row col]
   (+ col (* row (:size board))))
 (defn get-board-elem [board row col]
   (get (:fields board) (coords-to-index board row col)))
-
 
 (defn is-empty-field? [board row col]
   (let [index (coords-to-index board row col)]
@@ -35,6 +30,12 @@
   (put-field board row col cross))
 (defn put-circle [board row col]
   (put-field board row col circle))
+
+(defn print-board [board]
+  (let [keys (reverse (keys (:fields board)))]
+    (doseq [row (partition (:size board) keys)]
+      (let [values (map (fn [f] (get (:fields board) f)) row)]
+        (println values)))))
 
 (defn -main
   [& args]
