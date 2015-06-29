@@ -14,6 +14,7 @@
 
 (defn coords-to-index [board row col]
   (+ col (* row (:size board))))
+
 (defn get-board-elem [board row col]
   (get (:fields board) (coords-to-index board row col)))
 
@@ -38,14 +39,16 @@
 
 (defn put-cross [board row col]
   (put-field board row col cross))
+
 (defn put-circle [board row col]
   (put-field board row col circle))
 
 (defn print-board [board]
   (let [keys (reverse (keys (:fields board)))]
     (doseq [row (partition (:size board) keys)]
-      (let [values (map (fn [f] (get (:fields board) f)) row)]
-        (println values)))))
+      (let [values (map (fn [f] (get (:fields board) f)) row)
+            row-printable (clojure.string/join " | " values)]
+        (println row-printable)))))
 
 (defn -main
   [& args]
