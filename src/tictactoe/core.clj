@@ -1,12 +1,15 @@
 (ns tictactoe.core
   (:gen-class))
 
+(require '[clojure.string :as str])
+
 (def cross "X")
 (def circle "O")
 (def empty-field " ")
 
 (defrecord Board [size fields])
 (defrecord MoveResult [board move-performed])
+(defrecord Movement [mark row col])
 
 (defn empty-board 
   [size]
@@ -60,13 +63,24 @@
             row-printable (clojure.string/join " | " values)]
         (println row-printable)))))
 
+(defn movement 
+  [mark movement-string]
+  (let [coords (str/split movement-string #" ")
+        row (Integer/parseInt (get coords 0))
+        col (Integer/parseInt (get coords 1))]
+        (->Movement mark row col)))
+
 (defn prompt-move
   []
-  (println "Enter coordinates for move: ")
-  (let [input (clojure.string/trim (read-line))]
-    (println (str "your move: " input))))
+  (println "Enter coordinates for move (row col): ")
+  (let [input (str/trim (read-line))]
+    input))
 
 (defn -main
   [& args]
   (let [start-board (empty-board 3)]
-    (print-board start-board)))
+    (print-board start-board)
+    (let [move (prompt-move)
+          player-movement (movement cross move)
+          board-after-move (put-cross start-board (:row player-movement) (:col player-movement))]
+            (print-board (:board board-after-move)))))
