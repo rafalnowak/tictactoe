@@ -8,7 +8,6 @@
 (def empty-field " ")
 
 (defrecord Board [size fields])
-(defrecord MoveResult [board move-performed])
 (defrecord Movement [mark row col])
 
 (defn empty-board 
@@ -24,7 +23,7 @@
   [board row col]
   (get (:fields board) (coords-to-index board row col)))
 
-(defn is-empty-field? 
+(defn is-field-empty? 
   [board row col]
   (let [index (coords-to-index board row col)]
     (= empty-field (get (:fields board) index))))
@@ -39,13 +38,7 @@
 
 (defn put-field 
   [board row col value]
-  (if (is-empty-field? board row col)
-    (->MoveResult
-      (update-board board row col value)
-      true)
-    (->MoveResult 
-      board 
-      false)))
+    (update-board board row col value))
 
 (defn put-cross 
   [board row col]
@@ -68,7 +61,7 @@
   (let [coords (str/split movement-string #" ")
         row (Integer/parseInt (get coords 0))
         col (Integer/parseInt (get coords 1))]
-        (->Movement mark row col)))
+          (->Movement mark row col)))
 
 (defn prompt-move
   []
@@ -76,11 +69,16 @@
   (let [input (str/trim (read-line))]
     input))
 
+(defn game-loop
+  [board]
+  (let [move (prompt-move)
+        player-movement (movement cross move)
+        board-after-move (put-cross board (:row player-movement) (:col player-movement))]
+          (print-board board-after-move)
+          (recur board-after-move)))
+
 (defn -main
   [& args]
   (let [start-board (empty-board 3)]
     (print-board start-board)
-    (let [move (prompt-move)
-          player-movement (movement cross move)
-          board-after-move (put-cross start-board (:row player-movement) (:col player-movement))]
-            (print-board (:board board-after-move)))))
+    (game-loop start-board)))
