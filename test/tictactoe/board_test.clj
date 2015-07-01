@@ -1,6 +1,5 @@
-(ns tictactoe.core-test
+(ns tictactoe.board-test
   (:require [clojure.test :refer :all]
-            [tictactoe.core :refer :all]
             [tictactoe.board :refer :all]))
 
 (deftest board
