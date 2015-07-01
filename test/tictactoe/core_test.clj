@@ -1,6 +1,7 @@
 (ns tictactoe.core-test
   (:require [clojure.test :refer :all]
-            [tictactoe.core :refer :all]))
+            [tictactoe.core :refer :all]
+            [tictactoe.board :refer :all]))
 
 (deftest board
   (testing "Board should have correct size"
