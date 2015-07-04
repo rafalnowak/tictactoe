@@ -19,6 +19,7 @@
         col (Integer/parseInt (get coords 1))]
           (->Movement mark row col)))
 
+;; TODO: parametrized players symbol and players changing
 (defn attemp-move
   [board]
   (let [move-coords (prompt-move)

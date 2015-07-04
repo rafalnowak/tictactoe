@@ -59,6 +59,8 @@
         cols (range 0 (:size board))]
     (map (fn [row] (map (fn [col] [row col]) cols)) rows)))
 
+;; returns nil if no row matches predicate (strange clojure library behaviour?)
+;; TODO: check cols and diagonals
 (defn check-if-win?
   [board mark]
   (let [coords (fields-coords-by-rows board)]
