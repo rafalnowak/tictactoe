@@ -4,7 +4,13 @@
 (require '[clojure.string :as str]
          '[tictactoe.board :as board])
 
+;; TODO: better ways to create constants, maybe some enums?
+(def game-running "RUNNING")
+(def x-win "X-WIN")
+(def o-win "O-WIN")
+
 (defrecord Movement [mark row col])
+(defrecord BoardStatus [board game-status])
 
 (defn prompt-move
   []
@@ -27,16 +33,23 @@
         row (:row player-movement)
         col (:col player-movement)]
           (if (board/is-field-empty? board row col) 
-            (board/put-cross board row col)
+            (let [board (board/put-cross board row col)]
+              (if (board/check-if-win? board board/cross)
+                (->BoardStatus board x-win) 
+                (->BoardStatus board game-running))) 
             (do
               (println "Illegal move, try again") 
               (recur board)))))
 
 (defn game-loop
   [board]
-    (let [board-after-move (attemp-move board)]
-      (board/print-board board-after-move)
-      (recur board-after-move)))
+    (let [board-after-move (attemp-move board)
+          status (:game-status board-after-move)]
+      (if (= x-win status)
+        (println (str "Game over! " status))
+        (do
+          (board/print-board (:board board-after-move))
+          (recur (:board board-after-move))))))
 
 (defn -main
   [& args]

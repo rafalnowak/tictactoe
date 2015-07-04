@@ -61,6 +61,7 @@
 
 ;; returns nil if no row matches predicate (strange clojure library behaviour?)
 ;; TODO: check cols and diagonals
+;; TODO: split into smaller methods
 (defn check-if-win?
   [board mark]
   (let [coords (fields-coords-by-rows board)]
