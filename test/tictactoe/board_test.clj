@@ -22,3 +22,9 @@
   (testing "Board field with no symbol should be empty")
     (let [board (empty-board 3)]
       (is (= true (is-field-empty? board 1 1)))))
+
+(deftest board-win-conditions-rows
+  (testing "Check winning conditions in rows")
+    (let [board (empty-board 3)
+          board-with-winning-row (put-cross (put-cross (put-cross board 0 2) 0 1) 0 0)]
+        (is (= true (check-if-win? board-with-winning-row cross)))))
