@@ -49,6 +49,28 @@
   [board]
   (let [keys (reverse (keys (:fields board)))]
     (doseq [row (partition (:size board) keys)]
-      (let [values (map (fn [f] (get (:fields board) f)) row)
+      (let [values (map (fn [r] (get (:fields board) r)) row)
             row-printable (clojure.string/join " | " values)]
         (println row-printable)))))
+
+(defn fields-coords-by-rows
+  [board]
+  (let [rows (range 0 (:size board))
+        cols (range 0 (:size board))]
+    (map (fn [row] (map (fn [col] [row col]) cols)) rows)))
+
+(defn check-if-win?
+  [board mark]
+  (let [coords (fields-coords-by-rows board)]
+    (some 
+      (fn 
+        [row] 
+        (every? 
+          (fn 
+            [field] 
+            (let [row (nth field 0)
+                  col (nth field 1)]
+              (= mark (get-board-elem board row col)))
+            ) row)) 
+      coords)))
+
