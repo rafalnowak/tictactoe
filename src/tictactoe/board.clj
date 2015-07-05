@@ -53,25 +53,22 @@
             row-printable (clojure.string/join " | " values)]
         (println row-printable)))))
 
-(defn fields-coords-by-rows
+(defn rows-coords
   [board]
-  (let [rows (range 0 (:size board))
-        cols (range 0 (:size board))]
-    (map (fn [row] (map (fn [col] [row col]) cols)) rows)))
+  (let [indexes (range 0 (:size board))]
+    (map (fn [row] (map (fn [col] [row col]) indexes)) indexes)))
 
-(defn fields-coords-by-cols
+(defn columns-coords
   [board]
-  (let [rows (range 0 (:size board))
-        cols (range 0 (:size board))]
-    (map (fn [row] (map (fn [col] [col row]) rows)) cols)))
+  (let [indexes (range 0 (:size board))]
+    (map (fn [row] (map (fn [col] [col row]) indexes)) indexes)))
 
-;; TODO: board is always square so cols and rows can be one value
-(defn fields-coords-diagonals
+(defn diagonals-coords
   [board]
-  (let [rows (range 0 (:size board))
+  (let [indexes (range 0 (:size board))
         size (:size board)
-        diagSE (map (fn [i] [i i]) rows)
-        diagSW (map (fn [i] [i (- (- size 1) i)]) rows)]
+        diagSE (map (fn [i] [i i]) indexes)
+        diagSW (map (fn [i] [i (- (- size 1) i)]) indexes)]
     [diagSE diagSW]))
 
 (defn check-fields-for-win
@@ -81,18 +78,18 @@
 (defn map-coords-to-values
   [board coords] 
   (map (fn [field] 
-    (let [r (nth field 0) 
-          c (nth field 1)] 
-      (get-board-elem board r c))) coords))
+    (let [row (nth field 0) 
+          col (nth field 1)] 
+      (get-board-elem board row col))) coords))
 
 ;; returns nil if no row matches predicate (strange clojure library behaviour?)
 ;; using empty? and filter instead for more consistent result
 ;; TODO: check diagonals
 (defn check-if-win?
   [board mark]
-  (let [all-rows (fields-coords-by-rows board)
-        all-cols (fields-coords-by-cols board)
-        diagonals (fields-coords-diagonals board)
+  (let [all-rows (rows-coords board)
+        all-cols (columns-coords board)
+        diagonals (diagonals-coords board)
         fields-rows (map (partial map-coords-to-values board) all-rows)
         fields-cols (map (partial map-coords-to-values board) all-cols)
         fields-diagonals (map (partial map-coords-to-values board) diagonals)]
