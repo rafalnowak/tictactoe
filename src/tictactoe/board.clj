@@ -59,22 +59,32 @@
         cols (range 0 (:size board))]
     (map (fn [row] (map (fn [col] [row col]) cols)) rows)))
 
-(defn check-row-for-win
-  [mark fields-row]
-  (every? (fn [field] (= mark field)) fields-row))
+(defn fields-coords-by-cols
+  [board]
+  (let [rows (range 0 (:size board))
+        cols (range 0 (:size board))]
+    (map (fn [row] (map (fn [col] [col row]) rows)) cols)))
 
-(defn map-row-coords-to-values
-  [board row] 
+(defn check-fields-for-win
+  [mark fields]
+  (every? (fn [field] (= mark field)) fields))
+
+(defn map-coords-to-values
+  [board coords] 
   (map (fn [field] 
     (let [r (nth field 0) 
           c (nth field 1)] 
-      (get-board-elem board r c))) row))
+      (get-board-elem board r c))) coords))
 
 ;; returns nil if no row matches predicate (strange clojure library behaviour?)
 ;; using empty? and filter instead for more consistent result
 ;; TODO: check cols and diagonals
 (defn check-if-win?
   [board mark]
-  (let [coords (fields-coords-by-rows board)
-        fields (map (partial map-row-coords-to-values board) coords)]
-    (not (empty? (filter (partial check-row-for-win mark) fields)))))
+  (let [all-rows (fields-coords-by-rows board)
+        all-cols (fields-coords-by-cols board)
+        fields-rows (map (partial map-coords-to-values board) all-rows)
+        fields-cols (map (partial map-coords-to-values board) all-cols)]
+    (or 
+      (not (empty? (filter (partial check-fields-for-win mark) fields-rows)))
+      (not (empty? (filter (partial check-fields-for-win mark) fields-cols))))))
