@@ -28,3 +28,8 @@
     (let [board (empty-board 3)
           board-with-winning-row (put-cross (put-cross (put-cross board 0 2) 0 1) 0 0)]
         (is (= true (check-if-win? board-with-winning-row cross)))))
+
+(deftest board-win-conditions-rows-no-win
+  (testing "Not inform about win when conditions are not met")
+    (let [board (empty-board 3)]
+        (is (= false (check-if-win? board cross)))))

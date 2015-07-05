@@ -59,21 +59,22 @@
         cols (range 0 (:size board))]
     (map (fn [row] (map (fn [col] [row col]) cols)) rows)))
 
+(defn check-row-for-win
+  [mark fields-row]
+  (every? (fn [field] (= mark field)) fields-row))
+
+(defn map-row-coords-to-values
+  [board row] 
+  (map (fn [field] 
+    (let [r (nth field 0) 
+          c (nth field 1)] 
+      (get-board-elem board r c))) row))
+
 ;; returns nil if no row matches predicate (strange clojure library behaviour?)
+;; using empty? and filter instead for more consistent result
 ;; TODO: check cols and diagonals
-;; TODO: split into smaller methods
 (defn check-if-win?
   [board mark]
-  (let [coords (fields-coords-by-rows board)]
-    (some 
-      (fn 
-        [row] 
-        (every? 
-          (fn 
-            [field] 
-            (let [row (nth field 0)
-                  col (nth field 1)]
-              (= mark (get-board-elem board row col)))
-            ) row)) 
-      coords)))
-
+  (let [coords (fields-coords-by-rows board)
+        fields (map (partial map-row-coords-to-values board) coords)]
+    (not (empty? (filter (partial check-row-for-win mark) fields)))))
