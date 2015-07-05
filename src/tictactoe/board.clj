@@ -53,15 +53,18 @@
             row-printable (clojure.string/join " | " values)]
         (println row-printable)))))
 
+(defn generate-coords
+  [board coords-generating-function]
+  (let [indexes (range 0 (:size board))]
+    (map (fn [row] (map (partial coords-generating-function row) indexes)) indexes)))
+
 (defn rows-coords
   [board]
-  (let [indexes (range 0 (:size board))]
-    (map (fn [row] (map (fn [col] [row col]) indexes)) indexes)))
+  (generate-coords board (fn [row col] [row col])))
 
 (defn columns-coords
   [board]
-  (let [indexes (range 0 (:size board))]
-    (map (fn [row] (map (fn [col] [col row]) indexes)) indexes)))
+  (generate-coords board (fn [row col] [col row])))
 
 (defn diagonals-coords
   [board]
@@ -84,7 +87,6 @@
 
 ;; returns nil if no row matches predicate (strange clojure library behaviour?)
 ;; using empty? and filter instead for more consistent result
-;; TODO: check diagonals
 (defn check-if-win?
   [board mark]
   (let [all-rows (rows-coords board)
