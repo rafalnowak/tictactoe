@@ -37,7 +37,7 @@
   (let [coords (str/split movement-string #" ")
         row (Integer/parseInt (get coords 0))
         col (Integer/parseInt (get coords 1))]
-          (->Movement mark row col)))
+    (->Movement mark row col)))
 
 (defn attemp-move
   [board player]
