@@ -44,12 +44,15 @@
 (defn game-loop
   [board]
     (let [board-after-move (attemp-move board)
+          board (:board board-after-move)
           status (:game-status board-after-move)]
       (if (= x-win status)
-        (println (str "Game over! " status))
+        (do 
+          (board/print-board board)
+          (println (str "Game over! " status)))
         (do
-          (board/print-board (:board board-after-move))
-          (recur (:board board-after-move))))))
+          (board/print-board board)
+          (recur board)))))
 
 (defn -main
   [& args]
