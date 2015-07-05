@@ -16,7 +16,7 @@
   [board row col]
   (+ col (* row (:size board))))
 
-(defn get-board-elem 
+(defn field-at
   [board row col]
   (get (:fields board) (coords-to-index board row col)))
 
@@ -25,13 +25,13 @@
   (let [index (coords-to-index board row col)]
     (= empty-field (get (:fields board) index))))
 
-(defn update-fields-in-board 
+(defn update-field-in-board 
   [board row col value]
   (assoc (:fields board) (coords-to-index board row col) value))
 
 (defn update-board 
   [board row col value]
-  (->Board (:size board) (update-fields-in-board board row col value)))
+  (->Board (:size board) (update-field-in-board board row col value)))
 
 (defn put-field 
   [board row col value]
@@ -74,7 +74,7 @@
         diagSW (map (fn [i] [i (- (- size 1) i)]) indexes)]
     [diagSE diagSW]))
 
-(defn check-fields-for-win
+(defn all-fields-are-same?
   [mark fields-seq]
   (every? (fn [field] (= mark field)) fields-seq))
 
@@ -83,7 +83,7 @@
   (map (fn [field] 
     (let [row (nth field 0) 
           col (nth field 1)] 
-      (get-board-elem board row col))) coords))
+      (field-at board row col))) coords))
 
 ;; returns nil if no row matches predicate (strange clojure library behaviour?)
 ;; using empty? and filter instead for more consistent result
@@ -96,6 +96,6 @@
         fields-cols (map (partial map-coords-to-values board) all-cols)
         fields-diagonals (map (partial map-coords-to-values board) diagonals)]
     (or 
-      (not (empty? (filter (partial check-fields-for-win mark) fields-rows)))
-      (not (empty? (filter (partial check-fields-for-win mark) fields-cols)))
-      (not (empty? (filter (partial check-fields-for-win mark) fields-diagonals))))))
+      (not (empty? (filter (partial all-fields-are-same? mark) fields-rows)))
+      (not (empty? (filter (partial all-fields-are-same? mark) fields-cols)))
+      (not (empty? (filter (partial all-fields-are-same? mark) fields-diagonals))))))

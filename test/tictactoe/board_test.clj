@@ -11,12 +11,12 @@
 (deftest board-is-empty-field
   (testing "Board should have empty field when nothing was put on it"
     (let [board (empty-board 3)]
-      (is (= empty-field (get-board-elem board 1 1))))))
+      (is (= empty-field (field-at board 1 1))))))
 
 (deftest board-put
   (testing "Board should have field changed after putting cross"
     (let [board-after-move (put-cross (empty-board 3) 1 1)]
-      (is (= cross (get-board-elem board-after-move 1 1))))))
+      (is (= cross (field-at board-after-move 1 1))))))
 
 (deftest board-is-field-empty
   (testing "Board field with no symbol should be empty")
