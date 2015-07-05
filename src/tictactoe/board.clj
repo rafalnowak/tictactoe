@@ -65,9 +65,18 @@
         cols (range 0 (:size board))]
     (map (fn [row] (map (fn [col] [col row]) rows)) cols)))
 
+;; TODO: board is always square so cols and rows can be one value
+(defn fields-coords-diagonals
+  [board]
+  (let [rows (range 0 (:size board))
+        size (:size board)
+        diagSE (map (fn [i] [i i]) rows)
+        diagSW (map (fn [i] [i (- (- size 1) i)]) rows)]
+    [diagSE diagSW]))
+
 (defn check-fields-for-win
-  [mark fields]
-  (every? (fn [field] (= mark field)) fields))
+  [mark fields-seq]
+  (every? (fn [field] (= mark field)) fields-seq))
 
 (defn map-coords-to-values
   [board coords] 
@@ -78,13 +87,16 @@
 
 ;; returns nil if no row matches predicate (strange clojure library behaviour?)
 ;; using empty? and filter instead for more consistent result
-;; TODO: check cols and diagonals
+;; TODO: check diagonals
 (defn check-if-win?
   [board mark]
   (let [all-rows (fields-coords-by-rows board)
         all-cols (fields-coords-by-cols board)
+        diagonals (fields-coords-diagonals board)
         fields-rows (map (partial map-coords-to-values board) all-rows)
-        fields-cols (map (partial map-coords-to-values board) all-cols)]
+        fields-cols (map (partial map-coords-to-values board) all-cols)
+        fields-diagonals (map (partial map-coords-to-values board) diagonals)]
     (or 
       (not (empty? (filter (partial check-fields-for-win mark) fields-rows)))
-      (not (empty? (filter (partial check-fields-for-win mark) fields-cols))))))
+      (not (empty? (filter (partial check-fields-for-win mark) fields-cols)))
+      (not (empty? (filter (partial check-fields-for-win mark) fields-diagonals))))))

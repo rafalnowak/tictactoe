@@ -39,3 +39,15 @@
     (let [board (empty-board 3)
           board-with-winning-col (put-cross (put-cross (put-cross board 2 0) 1 0) 0 0)]
         (is (= true (check-if-win? board-with-winning-col cross)))))
+
+(deftest board-win-conditions-diag-south-east
+  (testing "Check winning conditions in diag south east")
+    (let [board (empty-board 3)
+          board-with-winning-col (put-cross (put-cross (put-cross board 2 2) 1 1) 0 0)]
+        (is (= true (check-if-win? board-with-winning-col cross)))))
+
+(deftest board-win-conditions-diag-south-west
+  (testing "Check winning conditions in diag south west")
+    (let [board (empty-board 3)
+          board-with-winning-col (put-cross (put-cross (put-cross board 2 0) 1 1) 0 2)]
+        (is (= true (check-if-win? board-with-winning-col cross)))))
