@@ -85,7 +85,7 @@
           col (nth field 1)] 
       (field-at board row col))) coords))
 
-;; returns nil if no row matches predicate (strange clojure library behaviour?)
+;; returns nil if no row matches predicate when using some (strange clojure library behaviour?)
 ;; using empty? and filter instead for more consistent result
 (defn check-if-win?
   [board mark]

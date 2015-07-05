@@ -30,8 +30,7 @@
 (defn prompt-for-move
   [player]
   (println (str (:mark player) " - enter coordinates for move (row col): "))
-  (let [input (str/trim (read-line))]
-    input))
+  (str/trim (read-line)))
 
 (defn create-movement 
   [mark movement-string]
@@ -46,14 +45,14 @@
         player-movement (create-movement (:mark player) move-coords)
         row (:row player-movement)
         col (:col player-movement)]
-          (if (board/is-field-empty? board row col) 
-            (let [board (board/put-field board row col (:mark player))]
-              (if (board/check-if-win? board (:mark player))
-                (->GameState board (winning-status-for-player player) player) 
-                (->GameState board game-running player))) 
-            (do
-              (println "Illegal move, try again") 
-              (recur board player)))))
+    (if (board/is-field-empty? board row col) 
+      (let [board (board/put-field board row col (:mark player))]
+        (if (board/check-if-win? board (:mark player))
+          (->GameState board (winning-status-for-player player) player) 
+          (->GameState board game-running player))) 
+      (do
+        (println "Illegal move, try again") 
+        (recur board player)))))
 
 (defn game-loop
   [board player]
