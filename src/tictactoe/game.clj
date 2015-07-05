@@ -1,4 +1,4 @@
-(ns tictactoe.core
+(ns tictactoe.game
   (:gen-class))
 
 (require '[clojure.string :as str]

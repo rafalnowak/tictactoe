@@ -87,6 +87,10 @@
 
 ;; returns nil if no row matches predicate when using some (strange clojure library behaviour?)
 ;; using empty? and filter instead for more consistent result
+(defn win-condition-for
+  [mark fields]
+  (not (empty? (filter (partial all-fields-are-same? mark) fields))))
+
 (defn check-if-win?
   [board mark]
   (let [all-rows (rows-coords board)
@@ -96,6 +100,6 @@
         fields-cols (map (partial map-coords-to-values board) all-cols)
         fields-diagonals (map (partial map-coords-to-values board) diagonals)]
     (or 
-      (not (empty? (filter (partial all-fields-are-same? mark) fields-rows)))
-      (not (empty? (filter (partial all-fields-are-same? mark) fields-cols)))
-      (not (empty? (filter (partial all-fields-are-same? mark) fields-diagonals))))))
+      (win-condition-for mark fields-rows)
+      (win-condition-for mark fields-cols)
+      (win-condition-for mark fields-diagonals))))
