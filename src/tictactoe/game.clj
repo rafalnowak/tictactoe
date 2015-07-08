@@ -2,7 +2,8 @@
   (:gen-class))
 
 (require '[clojure.string :as str]
-         '[tictactoe.board :as board])
+         '[tictactoe.board :as board]
+         '[tictactoe.ai :as ai])
 
 ;; TODO: better ways to create constants, maybe some enums?
 (def game-running "RUNNING")
@@ -11,6 +12,8 @@
 
 (defrecord Movement [mark row col])
 (defrecord GameState [board game-status player-to-move])
+
+;; TODO: player in separate module
 (defrecord Player [mark])
 
 ;; TODO: stronger coupling with player so no if will be necessary

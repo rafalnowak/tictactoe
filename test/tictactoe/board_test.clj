@@ -56,5 +56,4 @@
   (testing "Should return all empty fields as map")
     (let [board (empty-board 3)
           board-after-move (put-cross board 1 1)]
-        (is (= 8 (count (all-empty-fields board-after-move))))
-        (is (= 9 (count (all-empty-fields board-after-move))))))
+        (is (= 8 (count (all-empty-fields board-after-move))))))
