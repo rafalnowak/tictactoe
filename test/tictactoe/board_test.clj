@@ -51,3 +51,10 @@
     (let [board (empty-board 3)
           board-with-winning-col (put-cross (put-cross (put-cross board 2 0) 1 1) 0 2)]
         (is (= true (check-if-win? board-with-winning-col cross)))))
+
+(deftest board-all-empty-fields
+  (testing "Should return all empty fields as map")
+    (let [board (empty-board 3)
+          board-after-move (put-cross board 1 1)]
+        (is (= 8 (count (all-empty-fields board-after-move))))
+        (is (= 9 (count (all-empty-fields board-after-move))))))

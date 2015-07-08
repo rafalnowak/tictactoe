@@ -16,6 +16,12 @@
   [board row col]
   (+ col (* row (:size board))))
 
+(defn index-to-coords
+  [board i]
+  (let [row (quot i (:size board))
+        col (mod i (:size board))]
+    {:row row :col col}))
+
 (defn field-at
   [board row col]
   (get (:fields board) (coords-to-index board row col)))
@@ -24,6 +30,12 @@
   [board row col]
   (let [index (coords-to-index board row col)]
     (= empty-field (get (:fields board) index))))
+
+;; TODO: ugly hack with into {}, is there a nicer way?
+(defn all-empty-fields
+  [board]
+  (let [fields (:fields board)]
+    (into {} (filter #(= (second %) empty-field) fields))))
 
 (defn update-field-in-board 
   [board row col value]
