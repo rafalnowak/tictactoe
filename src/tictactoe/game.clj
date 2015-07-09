@@ -2,8 +2,7 @@
   (:gen-class))
 
 (require '[clojure.string :as str]
-         '[tictactoe.board :as board]
-         '[tictactoe.ai :as ai])
+         '[tictactoe.board :as board])
 
 ;; TODO: better ways to create constants, maybe some enums?
 (def game-running "RUNNING")
@@ -35,17 +34,21 @@
   (println (str (:mark player) " - enter coordinates for move (row col): "))
   (str/trim (read-line)))
 
-(defn create-movement 
+(defn create-movement
+  [mark row col]
+  (->Movement mark row col))
+
+(defn create-movement-from-str
   [mark movement-string]
   (let [coords (str/split movement-string #" ")
         row (Integer/parseInt (get coords 0))
         col (Integer/parseInt (get coords 1))]
-    (->Movement mark row col)))
+    (create-movement mark row col)))
 
 (defn attemp-move
   [board player]
   (let [move-coords (prompt-for-move player)
-        player-movement (create-movement (:mark player) move-coords)
+        player-movement (create-movement-from-str (:mark player) move-coords)
         row (:row player-movement)
         col (:col player-movement)]
     (if (board/is-field-empty? board row col) 

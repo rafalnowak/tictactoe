@@ -15,5 +15,5 @@
               coords (board/index-to-coords board ind)
               row (:row coords)
               col (:col coords)]
-          (board/put-field board row col mark)))
+          (game/create-movement mark row col)))
       empty-fields)))

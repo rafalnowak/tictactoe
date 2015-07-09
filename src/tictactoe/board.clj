@@ -59,7 +59,7 @@
 
 (defn print-board 
   [board]
-  (let [keys (reverse (keys (:fields board)))]
+  (let [keys (sort (keys (:fields board)))]
     (doseq [row (partition (:size board) keys)]
       (let [values (map (fn [r] (get (:fields board) r)) row)
             row-printable (clojure.string/join " | " values)]
@@ -115,3 +115,12 @@
       (win-condition-for mark fields-rows)
       (win-condition-for mark fields-cols)
       (win-condition-for mark fields-diagonals))))
+
+(defn draw?
+  [board]
+  (let [empty-fields (all-empty-fields board)]
+    (and 
+      (= 0 (count empty-fields))
+      (= false (check-if-win? board cross))
+      (= false (check-if-win? board circle)))))
+
