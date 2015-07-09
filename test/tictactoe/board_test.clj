@@ -58,11 +58,17 @@
           board-after-move (put-cross board 1 1)]
         (is (= 8 (count (all-empty-fields board-after-move))))))
 
+; O|X|O
+; O|X|O
+; X|O|X
 (deftest board-draw
   (testing "Should test for draw on board")
     (let [board (->Board 3 {0 circle 1 cross 2 circle 3 circle 4 cross 5 circle 6 cross 7 circle 8 cross})]
       (is (= true (draw? board)))))
 
+; X|X|O
+; O|X|O
+; X|O|X
 (deftest board-no-draw
   (testing "Should not return true for draw when board is filled but one of players won")
     (let [board (->Board 3 {0 cross 1 cross 2 circle 3 circle 4 cross 5 circle 6 cross 7 circle 8 cross})]
