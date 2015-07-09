@@ -15,16 +15,3 @@
   	  (is (= true (some (fn [fields] (= circle (get fields 8))) fields-for-possible-moves)))
   	  (is (= nil (get fields-for-possible-moves 4)))
       (is (= 8 (count possible-boards))))))
-
-(deftest generate-moves-2
-	(testing "Fooling arount minimax"
-    (let [start-board (empty-board 3)
-          board (put-circle (put-cross (put-cross (put-cross (put-circle (put-circle start-board 2 2) 2 1) 2 0) 1 0) 0 2) 0 0)
-          player (->Player cross)
-          moves (generate-all-possible-moves board player)]
-      (doseq [move moves] 
-        (let [board-for-move (put-field board (:row move) (:col move) (:mark player))
-              game-won (check-if-win? board-for-move (:mark player))]
-          (do
-            (println (str "game-won " game-won))
-            (println move)))))))
