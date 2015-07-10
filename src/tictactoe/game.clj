@@ -9,41 +9,39 @@
 (def x-win "X-WIN")
 (def o-win "O-WIN")
 
-(defrecord Movement [mark row col])
 (defrecord GameState [board game-status player-to-move])
 
 ;; TODO: player in separate module
 (defrecord Player [mark])
 
-;; TODO: stronger coupling with player so no if will be necessary
-(defn next-player
-  [player]
-  (if (= board/cross (:mark player))
-    (->Player board/circle)
-    (->Player board/cross)))
-
-;; TODO: stronger coupling with player so no if will be necessary
-(defn winning-status-for-player
-  [player]
-  (if (= board/cross (:mark player))
-    x-win
-    o-win))
-
-(defn prompt-for-move
-  [player]
-  (println (str (:mark player) " - enter coordinates for move (row col): "))
-  (str/trim (read-line)))
+(defrecord Movement [mark row col])
 
 (defn create-movement
   [mark row col]
   (->Movement mark row col))
 
-(defn create-movement-from-str
-  [mark movement-string]
-  (let [coords (str/split movement-string #" ")
-        row (Integer/parseInt (get coords 0))
-        col (Integer/parseInt (get coords 1))]
-    (create-movement mark row col)))
+(declare game-loop attemp-move prompt-for-move create-movement-from-str winning-status-for-player next-player)
+
+;; TODO: random starting player
+(defn -main
+  [& args]
+  (let [start-board (board/empty-board 3)
+        starting-player (->Player board/circle)]
+    (board/print-board start-board)
+    (game-loop start-board starting-player)))
+
+(defn game-loop
+  [board player]
+    (let [board-after-move (attemp-move board player)
+          board (:board board-after-move)
+          status (:game-status board-after-move)]
+      (if (or (= x-win status) (= o-win status))
+        (do 
+          (board/print-board board)
+          (println (str "Game over! " status)))
+        (do
+          (board/print-board board)
+          (recur board (next-player player))))))
 
 (defn attemp-move
   [board player]
@@ -60,23 +58,28 @@
         (println "Illegal move, try again") 
         (recur board player)))))
 
-(defn game-loop
-  [board player]
-    (let [board-after-move (attemp-move board player)
-          board (:board board-after-move)
-          status (:game-status board-after-move)]
-      (if (or (= x-win status) (= o-win status))
-        (do 
-          (board/print-board board)
-          (println (str "Game over! " status)))
-        (do
-          (board/print-board board)
-          (recur board (next-player player))))))
+(defn prompt-for-move
+  [player]
+  (println (str (:mark player) " - enter coordinates for move (row col): "))
+  (str/trim (read-line)))
 
-;; TODO: random starting player
-(defn -main
-  [& args]
-  (let [start-board (board/empty-board 3)
-        starting-player (->Player board/circle)]
-    (board/print-board start-board)
-    (game-loop start-board starting-player)))
+(defn create-movement-from-str
+  [mark movement-string]
+  (let [coords (str/split movement-string #" ")
+        row (Integer/parseInt (get coords 0))
+        col (Integer/parseInt (get coords 1))]
+    (create-movement mark row col)))
+
+;; TODO: stronger coupling with player so no if will be necessary
+(defn winning-status-for-player
+  [player]
+  (if (= board/cross (:mark player))
+    x-win
+    o-win))
+
+;; TODO: stronger coupling with player so no if will be necessary
+(defn next-player
+  [player]
+  (if (= board/cross (:mark player))
+    (->Player board/circle)
+    (->Player board/cross)))

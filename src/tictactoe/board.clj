@@ -65,10 +65,22 @@
             row-printable (clojure.string/join " | " values)]
         (println row-printable)))))
 
-(defn generate-coords
-  [board coords-generating-function]
-  (let [indexes (range 0 (:size board))]
-    (map (fn [row] (map (partial coords-generating-function row) indexes)) indexes)))
+(declare rows-coords columns-coords diagonals-coords
+  generate-coords map-coords-to-values win-condition-for 
+  all-fields-are-same?)
+
+(defn check-if-win?
+  [board mark]
+  (let [all-rows (rows-coords board)
+        all-cols (columns-coords board)
+        diagonals (diagonals-coords board)
+        fields-rows (map (partial map-coords-to-values board) all-rows)
+        fields-cols (map (partial map-coords-to-values board) all-cols)
+        fields-diagonals (map (partial map-coords-to-values board) diagonals)]
+    (or 
+      (win-condition-for mark fields-rows)
+      (win-condition-for mark fields-cols)
+      (win-condition-for mark fields-diagonals))))
 
 (defn rows-coords
   [board]
@@ -86,9 +98,10 @@
         diagSW (map (fn [i] [i (- (- size 1) i)]) indexes)]
     [diagSE diagSW]))
 
-(defn all-fields-are-same?
-  [mark fields-seq]
-  (every? (fn [field] (= mark field)) fields-seq))
+(defn generate-coords
+  [board coords-generating-function]
+  (let [indexes (range 0 (:size board))]
+    (map (fn [row] (map (partial coords-generating-function row) indexes)) indexes)))
 
 (defn map-coords-to-values
   [board coords] 
@@ -103,18 +116,9 @@
   [mark fields]
   (not (empty? (filter (partial all-fields-are-same? mark) fields))))
 
-(defn check-if-win?
-  [board mark]
-  (let [all-rows (rows-coords board)
-        all-cols (columns-coords board)
-        diagonals (diagonals-coords board)
-        fields-rows (map (partial map-coords-to-values board) all-rows)
-        fields-cols (map (partial map-coords-to-values board) all-cols)
-        fields-diagonals (map (partial map-coords-to-values board) diagonals)]
-    (or 
-      (win-condition-for mark fields-rows)
-      (win-condition-for mark fields-cols)
-      (win-condition-for mark fields-diagonals))))
+(defn all-fields-are-same?
+  [mark fields-seq]
+  (every? (fn [field] (= mark field)) fields-seq))
 
 (defn draw?
   [board]
@@ -123,4 +127,3 @@
       (= 0 (count empty-fields))
       (= false (check-if-win? board cross))
       (= false (check-if-win? board circle)))))
-
