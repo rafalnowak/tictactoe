@@ -14,13 +14,17 @@
 ;; TODO: player in separate module
 (defrecord Player [mark])
 
+(defn create-player
+  [mark]
+  (->Player mark))
+
 (defrecord Movement [mark row col])
 
 (defn create-movement
   [mark row col]
   (->Movement mark row col))
 
-(declare game-loop attemp-move prompt-for-move create-movement-from-str winning-status-for-player next-player)
+(declare game-loop attemp-move prompt-for-move create-movement-from-str winning-status-for-player opponent-player)
 
 ;; TODO: random starting player
 (defn -main
@@ -41,7 +45,7 @@
           (println (str "Game over! " status)))
         (do
           (board/print-board board)
-          (recur board (next-player player))))))
+          (recur board (opponent-player player))))))
 
 (defn attemp-move
   [board player]
@@ -78,7 +82,7 @@
     o-win))
 
 ;; TODO: stronger coupling with player so no if will be necessary
-(defn next-player
+(defn opponent-player
   [player]
   (if (= board/cross (:mark player))
     (->Player board/circle)
