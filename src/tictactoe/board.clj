@@ -69,6 +69,7 @@
   generate-coords map-coords-to-values win-condition-for 
   all-fields-are-same?)
 
+;; TODO - should take player as second argument
 (defn check-if-win?
   [board mark]
   (let [all-rows (rows-coords board)
@@ -127,3 +128,9 @@
       (= 0 (count empty-fields))
       (= false (check-if-win? board cross))
       (= false (check-if-win? board circle)))))
+
+(defn game-over?
+  [board player]
+  (or
+    (draw? board)
+    (check-if-win? board (:mark player))))
