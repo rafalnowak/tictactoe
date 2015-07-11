@@ -128,9 +128,3 @@
       (= 0 (count empty-fields))
       (= false (check-if-win? board cross))
       (= false (check-if-win? board circle)))))
-
-(defn game-over?
-  [board player]
-  (or
-    (draw? board)
-    (check-if-win? board (:mark player))))

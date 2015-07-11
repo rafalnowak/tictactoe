@@ -36,13 +36,18 @@
           (game/create-movement mark row col)))
       empty-fields)))
 
+(defrecord GameStep [move player board-applied score])
+
 (defn minimax
-  [board current-player level]
+  [board current-player depth acc]
   (let [possible-moves (generate-all-possible-moves board current-player)]
-    (doseq [move possible-moves]
+    (map (fn [move]
       (let [board-applied (apply-move-to-board board move)
-            score (score-move board move current-player)
-            print-test (do (println (str "Level: " level ", score: " score)) (board/print-board board-applied) (println ""))]
-        (if (board/game-over? board-applied current-player)
-          ()
-          (minimax board-applied (game/opponent-player current-player) (+ 1 level)))))))
+            score (score-move board move current-player)]
+        (if (game/game-over? board-applied current-player)
+          acc
+          (minimax board-applied 
+            (game/opponent-player current-player) 
+            (+ 1 depth) 
+            (conj acc (->GameStep move current-player board-applied score))))))
+    possible-moves)))

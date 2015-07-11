@@ -30,9 +30,14 @@
 ;             (println move)
 ;             (println "")))))))
 
+(use 'clojure.pprint)
+
 (deftest minimax-test
   (testing "Fooling arount minimax"
     (let [start-board (empty-board 3)
           player (create-player cross)
-          board (put-circle (put-cross (put-cross (put-cross (put-circle (put-circle start-board 2 2) 2 1) 2 0) 1 0) 0 2) 0 0)]
-      (minimax board player 0))))
+          board (put-circle (put-cross (put-cross (put-cross (put-circle (put-circle start-board 2 2) 2 1) 2 0) 1 0) 0 2) 0 0)
+          minimax-result (minimax board player 0 [])]
+      (do
+        (println "minimax-result:")
+        (pprint minimax-result)))))

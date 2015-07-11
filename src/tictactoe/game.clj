@@ -87,3 +87,9 @@
   (if (= board/cross (:mark player))
     (->Player board/circle)
     (->Player board/cross)))
+
+(defn game-over?
+  [board player]
+  (or
+    (board/draw? board)
+    (board/check-if-win? board (:mark player))))
