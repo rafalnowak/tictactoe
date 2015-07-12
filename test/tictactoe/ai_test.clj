@@ -16,28 +16,13 @@
   	  (is (= nil (get fields-for-possible-moves 4)))
       (is (= 8 (count possible-boards))))))
 
-; (deftest generate-moves-2
-;   (testing "Fooling arount moves"
-;     (let [start-board (empty-board 3)
-;           player (create-player cross)
-;           board (put-circle (put-cross (put-cross (put-cross (put-circle (put-circle start-board 2 2) 2 1) 2 0) 1 0) 0 2) 0 0)
-;           moves (generate-all-possible-moves board player)]
-;       (doseq [move moves]
-;         (let [board-for-move (put-field board (:row move) (:col move) (:mark player))         
-;               score (score-move board move player)]
-;           (do
-;             (println (str "score: " score))
-;             (println move)
-;             (println "")))))))
-
-(use 'clojure.pprint)
-
 (deftest minimax-test
-  (testing "Fooling arount minimax"
+  (testing "Should choose move with score 10 for ai player"
     (let [start-board (empty-board 3)
-          player (create-player cross)
+          ai-player (create-player cross)
           board (put-circle (put-cross (put-cross (put-cross (put-circle (put-circle start-board 2 2) 2 1) 2 0) 1 0) 0 2) 0 0)
-          minimax-result (minimax board player 0 [])]
-      (do
-        (println "minimax-result:")
-        (pprint minimax-result)))))
+          chosen (choose-move board ai-player)
+          score (:scores chosen)
+          move (:move chosen)]
+      (is (= score 10))
+      (is (= move (create-movement cross 1 1))))))
