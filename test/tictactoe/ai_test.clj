@@ -26,3 +26,14 @@
           move (:move chosen)]
       (is (= score 10))
       (is (= move (create-movement cross 1 1))))))
+
+(deftest minimax-test-depth
+  (testing "Should choose best move"
+    (let [start-board (empty-board 3)
+          ai-player (create-player cross)
+          board (put-circle (put-circle (put-circle (put-cross (put-cross start-board 2 1) 2 0) 2 2) 1 2) 0 1)
+          chosen (choose-move board ai-player)
+          score (:scores chosen)
+          move (:move chosen)]
+      (is (= score -7))
+      (is (= move (create-movement cross 0 2))))))
