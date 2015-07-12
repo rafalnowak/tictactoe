@@ -39,7 +39,13 @@
 (defn attemp-move
   [board player]
   (if (= ai/ai-player player)
-    (println "ai move todo")
+    (let [ai-move (ai/choose-move board player)
+          row (:row (:move ai-move))
+          col (:col (:move ai-move))]
+      (let [board (board/put-field board row col (:mark player))]
+        (if (board/check-if-win? board (:mark player))
+          (->GameState board (winning-status-for-player player) player) 
+          (->GameState board game-running player))))
     (let [move-coords (prompt-for-move player)
           player-movement (create-movement-from-str (:mark player) move-coords)
           row (:row player-movement)
