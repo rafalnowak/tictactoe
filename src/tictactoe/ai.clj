@@ -1,13 +1,12 @@
 (ns tictactoe.ai
   (:gen-class))
 
-(require '[clojure.string :as str]
-         '[tictactoe.board :as board]
-         '[tictactoe.game :as game])
+(require '[tictactoe.board :as board]
+         '[tictactoe.game-tech :as game-tech])
 
 ;; TODO: configurable ai player
-(def ai-player (game/create-player board/cross))
-(def human-player (game/create-player board/circle))
+(def ai-player (game-tech/create-player board/cross))
+(def human-player (game-tech/create-player board/circle))
 
 (defrecord GameStep [move player score nodes])
 
@@ -24,8 +23,8 @@
     (map (fn [move]
       (let [board-applied (apply-move-to-board board move)
             score (score-move board move current-player depth)
-            opponent (game/opponent-player current-player)]
-        (if (game/game-over? board-applied current-player)
+            opponent (game-tech/opponent-player current-player)]
+        (if (game-tech/game-over? board-applied current-player)
           (->GameStep move opponent score [])
           (->GameStep move opponent score (minimax-tree-with-depth board-applied opponent (+ 1 depth))))))
     possible-moves)))
@@ -40,7 +39,7 @@
               coords (board/index-to-coords board ind)
               row (:row coords)
               col (:col coords)]
-          (game/create-movement mark row col)))
+          (game-tech/create-movement mark row col)))
       empty-fields)))
 
 ;; TODO: configurable player

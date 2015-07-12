@@ -2,7 +2,7 @@
 
 Simple tic-tac-toe game. Created as pet-project when I was learning Clojure language.
 
-Next step: creating simple AI for opponent.
+You can play again AI opponent coded with simple minimax algorithm.
 
 ## License
 

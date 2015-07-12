@@ -2,6 +2,7 @@
   (:require [clojure.test :refer :all]
             [tictactoe.board :refer :all]
             [tictactoe.game :refer :all]
+            [tictactoe.game-tech :refer :all]
             [tictactoe.ai :refer :all]))
 
 (deftest generate-all-moves

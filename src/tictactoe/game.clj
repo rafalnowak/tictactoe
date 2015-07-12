@@ -2,7 +2,9 @@
   (:gen-class))
 
 (require '[clojure.string :as str]
-         '[tictactoe.board :as board])
+         '[tictactoe.board :as board]
+         '[tictactoe.game-tech :as game-tech]
+         '[tictactoe.ai :as ai])
 
 ;; TODO: better ways to create constants, maybe some enums?
 (def game-running "RUNNING")
@@ -11,26 +13,13 @@
 
 (defrecord GameState [board game-status player-to-move])
 
-;; TODO: player in separate module
-(defrecord Player [mark])
-
-(defn create-player
-  [mark]
-  (->Player mark))
-
-(defrecord Movement [mark row col])
-
-(defn create-movement
-  [mark row col]
-  (->Movement mark row col))
-
-(declare game-loop attemp-move prompt-for-move create-movement-from-str winning-status-for-player opponent-player)
+(declare game-loop attemp-move prompt-for-move create-movement-from-str winning-status-for-player)
 
 ;; TODO: random starting player
 (defn -main
   [& args]
   (let [start-board (board/empty-board 3)
-        starting-player (->Player board/circle)]
+        starting-player (game-tech/create-player board/circle)]
     (board/print-board start-board)
     (game-loop start-board starting-player)))
 
@@ -45,22 +34,24 @@
           (println (str "Game over! " status)))
         (do
           (board/print-board board)
-          (recur board (opponent-player player))))))
+          (recur board (game-tech/opponent-player player))))))
 
 (defn attemp-move
   [board player]
-  (let [move-coords (prompt-for-move player)
-        player-movement (create-movement-from-str (:mark player) move-coords)
-        row (:row player-movement)
-        col (:col player-movement)]
-    (if (board/is-field-empty? board row col) 
-      (let [board (board/put-field board row col (:mark player))]
-        (if (board/check-if-win? board (:mark player))
-          (->GameState board (winning-status-for-player player) player) 
-          (->GameState board game-running player))) 
-      (do
-        (println "Illegal move, try again") 
-        (recur board player)))))
+  (if (= ai/ai-player player)
+    (println "ai move todo")
+    (let [move-coords (prompt-for-move player)
+          player-movement (create-movement-from-str (:mark player) move-coords)
+          row (:row player-movement)
+          col (:col player-movement)]
+      (if (board/is-field-empty? board row col) 
+        (let [board (board/put-field board row col (:mark player))]
+          (if (board/check-if-win? board (:mark player))
+            (->GameState board (winning-status-for-player player) player) 
+            (->GameState board game-running player))) 
+        (do
+          (println "Illegal move, try again") 
+          (recur board player))))))
 
 (defn prompt-for-move
   [player]
@@ -72,7 +63,7 @@
   (let [coords (str/split movement-string #" ")
         row (Integer/parseInt (get coords 0))
         col (Integer/parseInt (get coords 1))]
-    (create-movement mark row col)))
+    (game-tech/create-movement mark row col)))
 
 ;; TODO: stronger coupling with player so no if will be necessary
 (defn winning-status-for-player
@@ -80,16 +71,3 @@
   (if (= board/cross (:mark player))
     x-win
     o-win))
-
-;; TODO: stronger coupling with player so no if will be necessary
-(defn opponent-player
-  [player]
-  (if (= board/cross (:mark player))
-    (->Player board/circle)
-    (->Player board/cross)))
-
-(defn game-over?
-  [board player]
-  (or
-    (board/draw? board)
-    (board/check-if-win? board (:mark player))))
