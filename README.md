@@ -1,5 +1,7 @@
 # tic-tac-toe
 
+[![Circle CI](https://circleci.com/gh/rafalnowak/tictactoe.svg?style=svg)](https://circleci.com/gh/rafalnowak/tictactoe)
+
 Simple tic-tac-toe game. Created as pet-project when I was learning Clojure language.
 
 You can play again AI opponent coded with simple minimax algorithm.
